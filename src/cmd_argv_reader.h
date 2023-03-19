@@ -27,7 +27,7 @@ char *allocateBuffer(int n);
 
 // Command-line arguments processing functionality 
 int readlines(char *str);
-int argIdentifier();
+int wcIdentifier();
 void strcpyPtr(char *s, char *t);
 
 

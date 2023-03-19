@@ -12,7 +12,9 @@ int main(int argc, char **argv)
     }
 
     //printf("comp: %d\n", strcmp("hello", "bitch"));
-    argIdentifier();
+    if (strcmp(*cmdBuffer, "wc") == 0) {
+        wcIdentifier();
+    }
 
     return 0;
 }
