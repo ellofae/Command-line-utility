@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include "cmd_argv_reader.h"
-#include "wc_struct.h"
+#include "cmd_reader/cmd_argv_reader.h"
+#include "wc/wc_struct.h"
 
 int main(int argc, char **argv)
 {
@@ -11,7 +11,6 @@ int main(int argc, char **argv)
         }
     }
 
-    //printf("comp: %d\n", strcmp("hello", "bitch"));
     if (strcmp(*cmdBuffer, "wc") == 0) {
         wcIdentifier();
     }

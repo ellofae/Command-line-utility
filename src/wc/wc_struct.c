@@ -1,55 +1,5 @@
-#include "cmd_argv_reader.h"
 #include "wc_struct.h"
-
-// Pointer array variables initialisation
-// char **cmdPtr = cmdBuffer;
-int nlines = 0;
-
-// Buffer manager variable allocation
-char *allocPtr = allocBuf;
-
-char *allocateBuffer(int n)
-{
-    if (allocBuf + BUFSIZE - allocPtr >= n)
-    {
-        allocPtr += n;
-        return allocPtr - n;
-    }
-    else
-    {
-        return 0;
-    }
-}
-
-// Command-line processing functionality initialisation:
-// Reading cmd-arguments and writing them into a buffer
-int readlines(char *str)
-{
-    char *p;
-    char line[MAXLEN];
-    int len = 0;
-
-    if (nlines >= CMDAMOUNT)
-    {
-        return -1;
-    }
-
-    while (len < MAXLEN - 1 && *str != '\0')
-    {
-        *(line + len++) = *str++;
-    }
-    *(line + len) = '\0';
-
-    if ((p = allocateBuffer(len + 1)) != 0)
-    {
-        strcpyPtr(p, line);
-        *(cmdBuffer + nlines++) = p;
-    }
-    else
-    {
-        return -1;
-    }
-}
+#include "../cmd_reader/cmd_argv_reader.h"
 
 // Processing buffer implementation
 int wcIdentifier()
@@ -133,9 +83,86 @@ int wcIdentifier()
 }
 
 // Comparison function implementation
-void strcpyPtr(char *s, char *t)
+void stringPointerCopy(char *s, char *t)
 {
     while ((*s++ = *t++) != '\0')
         ;
     *s = '\0';
+}
+
+// Unix wc command flags functionality implementation:
+// -l wc flag functionality implementation
+int lineCounter(char *filename) {
+    FILE *fptr = fopen(filename, "r");
+    int c, count = 0;
+
+    while ((c = getc(fptr)) != EOF) {
+        if (c == '\n') {
+            ++count;
+        }
+    }
+
+    fclose(fptr);
+    return count;
+}
+
+// -m wc flag functionality implementation
+int charCounter(char *filename) {
+    FILE *fptr = fopen(filename, "r");
+    int c, count = 0;
+
+    while ((c = getc(fptr)) != EOF) {
+        ++count;
+    }
+
+    fclose(fptr);
+    return count;
+}
+
+// -c wc flag functionality implementation
+int byteCounter(char *filename) {
+    FILE *fptr = fopen(filename, "r");
+    int c, count = 0;
+
+    while ((c = getc(fptr)) != EOF) {
+        ++count;
+    }
+
+    fclose(fptr);
+    return count;
+}
+
+// -w wc flag functionality implementation
+int wordCounter(char *filename) {
+    FILE *fptr = fopen(filename, "r");
+    int c, count = 0;
+
+    while ((c = getc(fptr)) != EOF) {
+        if (c == ' ' || c == '\n') {
+            ++count;
+        }
+    }
+
+    fclose(fptr);
+    return count;
+}
+
+// -L wc flag functionality implementation
+int maxWidth(char *filename) {
+    FILE *fptr = fopen(filename, "r");
+    int c, count = 0, maxCount = 0;
+
+    while ((c = getc(fptr)) != EOF) {
+        if (c != '\n') {
+            ++count;
+        } else {
+            if (count > maxCount) {
+                maxCount = count;
+                count = 0;
+            }
+        }
+    }
+
+    fclose(fptr);
+    return maxCount;
 }
