@@ -88,17 +88,19 @@ int argIdentifier() {
             }
         }
 
-        printf("lines: %d\n", lineCounter(cmdBuffer[nlines-1]));
-        printf("chars: %d\n", charCounter(cmdBuffer[nlines-1]));
-        printf("bytes: %d\n", byteCounter(cmdBuffer[nlines-1]));
-        printf("words: %d\n", wordCounter(cmdBuffer[nlines-1]));
-        printf("width: %d\n", maxWidth(cmdBuffer[nlines-1]));
+        //printf("lines: %d\n", lineCounter(cmdBuffer[nlines-1]));
+        //printf("chars: %d\n", charCounter(cmdBuffer[nlines-1]));
+        //printf("bytes: %d\n", byteCounter(cmdBuffer[nlines-1]));
+        //printf("words: %d\n", wordCounter(cmdBuffer[nlines-1]));
+        //printf("width: %d\n", maxWidth(cmdBuffer[nlines-1]));
 
         if (identifier != 0) {
             printf("c: %d\nm: %d\nl: %d\nw: %d\nL: %d\n", wcStructure.cFlag, wcStructure.mFlag, wcStructure.lFlag,
         wcStructure.wFlag, wcStructure.bigLFlag);
         } else {
-            printf("no options provided (default case)\n");
+            printf(" %d", lineCounter(cmdBuffer[nlines-1]));
+            printf(" %d", wordCounter(cmdBuffer[nlines-1]));
+            printf(" %d %s\n", byteCounter(cmdBuffer[nlines-1]), cmdBuffer[nlines-1]);
         }
     }
 }

@@ -1,5 +1,6 @@
 #include "wc_struct.h"
 
+// Unix wc command flags functionality implementation:
 // -l wc flag functionality implementation
 int lineCounter(char *filename) {
     FILE *fptr = fopen(filename, "r");
