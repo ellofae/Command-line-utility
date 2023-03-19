@@ -12,4 +12,10 @@ struct wcStruct {
     int bigLFlag;
 };
 
+int lineCounter(char *filename); // -l wc flag functionality
+int charCounter(char *filename); // -m wc flag functionality
+int byteCounter(char *filename); // -c wc flag functionality
+int wordCounter(char *filename); // -w wc flag functionality
+int maxWidth(char *filename); // -L wc flag functionality
+
 #endif

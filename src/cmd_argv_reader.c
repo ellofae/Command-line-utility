@@ -42,17 +42,23 @@ int readlines(char *str) {
     }
 }
 
-// Processing buffer
+// Processing buffer implementation
 int argIdentifier() {
     if (strcmp(*cmdBuffer, "wc") == 0) {
         char *wcOptions[WCOPTIONS] = {"-c", "-m", "-l", "-w", "-L"};
         char **cmdPtr = cmdBuffer;
+
         struct wcStruct wcStructure;
+        wcStructure.cFlag = 0;
+        wcStructure.mFlag = 0;
+        wcStructure.lFlag = 0;
+        wcStructure.wFlag = 0;
+        wcStructure.bigLFlag = 0;
 
         int identifier = 0;
 
         int i, opt;
-        for (i = 1; i < nlines; i++) {
+        for (i = 1; i < nlines - 1; i++) {
             for (opt = 0; opt < WCOPTIONS; opt++) { 
                 if (strcmp(*(cmdPtr+i), wcOptions[opt]) == 0) {
                     char option = *++wcOptions[opt];
@@ -82,6 +88,12 @@ int argIdentifier() {
             }
         }
 
+        printf("lines: %d\n", lineCounter(cmdBuffer[nlines-1]));
+        printf("chars: %d\n", charCounter(cmdBuffer[nlines-1]));
+        printf("bytes: %d\n", byteCounter(cmdBuffer[nlines-1]));
+        printf("words: %d\n", wordCounter(cmdBuffer[nlines-1]));
+        printf("width: %d\n", maxWidth(cmdBuffer[nlines-1]));
+
         if (identifier != 0) {
             printf("c: %d\nm: %d\nl: %d\nw: %d\nL: %d\n", wcStructure.cFlag, wcStructure.mFlag, wcStructure.lFlag,
         wcStructure.wFlag, wcStructure.bigLFlag);
@@ -91,6 +103,7 @@ int argIdentifier() {
     }
 }
 
+// Comparison function implementation
 void strcpyPtr(char *s, char *t)
 {
     while ((*s++ = *t++) != '\0')
