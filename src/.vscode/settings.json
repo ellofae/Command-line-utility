@@ -1,6 +1,0 @@
-{
-    "files.associations": {
-        "cmd_argv_reader.h": "c",
-        "wc_struct.h": "c"
-    }
-}
