@@ -82,19 +82,16 @@ int wcIdentifier()
     printf(" %s\n", cmdBuffer[nlines - 1]);
 }
 
-// Comparison function implementation
-void stringPointerCopy(char *s, char *t)
-{
-    while ((*s++ = *t++) != '\0')
-        ;
-    *s = '\0';
-}
-
 // Unix wc command flags functionality implementation:
 // -l wc flag functionality implementation
 int lineCounter(char *filename) {
-    FILE *fptr = fopen(filename, "r");
-    int c, count = 0;
+    FILE *fptr;
+    if ((fptr = fopen(filename, "r")) == NULL) {
+        printf("wc: didn't manage to open the file '%s'\n", filename);
+        return -1;
+    }
+    register int c;
+    int count = 0;
 
     while ((c = getc(fptr)) != EOF) {
         if (c == '\n') {
@@ -108,8 +105,13 @@ int lineCounter(char *filename) {
 
 // -m wc flag functionality implementation
 int charCounter(char *filename) {
-    FILE *fptr = fopen(filename, "r");
-    int c, count = 0;
+    FILE *fptr;
+    if ((fptr = fopen(filename, "r")) == NULL) {
+        printf("wc: didn't manage to open the file '%s'\n", filename);
+        return -1;
+    }
+    register int c;
+    int count = 0;
 
     while ((c = getc(fptr)) != EOF) {
         ++count;
@@ -121,8 +123,13 @@ int charCounter(char *filename) {
 
 // -c wc flag functionality implementation
 int byteCounter(char *filename) {
-    FILE *fptr = fopen(filename, "r");
-    int c, count = 0;
+    FILE *fptr;
+    if ((fptr = fopen(filename, "r")) == NULL) {
+        printf("wc: didn't manage to open the file '%s'\n", filename);
+        return -1;
+    }
+    register int c;
+    int count = 0;
 
     while ((c = getc(fptr)) != EOF) {
         ++count;
@@ -134,8 +141,13 @@ int byteCounter(char *filename) {
 
 // -w wc flag functionality implementation
 int wordCounter(char *filename) {
-    FILE *fptr = fopen(filename, "r");
-    int c, count = 0;
+    FILE *fptr;
+    if ((fptr = fopen(filename, "r")) == NULL) {
+        printf("wc: didn't manage to open the file '%s'\n", filename);
+        return -1;
+    }
+    register int c;
+    int count = 0;
 
     while ((c = getc(fptr)) != EOF) {
         if (c == ' ' || c == '\n') {
@@ -149,8 +161,13 @@ int wordCounter(char *filename) {
 
 // -L wc flag functionality implementation
 int maxWidth(char *filename) {
-    FILE *fptr = fopen(filename, "r");
-    int c, count = 0, maxCount = 0;
+    FILE *fptr;
+    if ((fptr = fopen(filename, "r")) == NULL) {
+        printf("wc: didn't manage to open the file '%s'\n", filename);
+        return -1;
+    }
+    register int c;
+    int count = 0, maxCount = 0;
 
     while ((c = getc(fptr)) != EOF) {
         if (c != '\n') {

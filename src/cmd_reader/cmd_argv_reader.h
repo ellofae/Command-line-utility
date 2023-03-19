@@ -24,8 +24,11 @@ char *allocateBuffer(int n);
 
 // Possible Command-line options
 #define WCOPTIONS 5
+#define CATOPTIONS 5
 
 // Command-line arguments processing functionality 
 int readlines(char *str);
 
+// Comparison function implementation
+void stringPointerCopy(char *s, char *t);
 #endif

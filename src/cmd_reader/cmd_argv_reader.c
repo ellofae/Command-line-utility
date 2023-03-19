@@ -2,7 +2,6 @@
 #include "../wc/wc_struct.h"
 
 // Pointer array variables initialisation
-// char **cmdPtr = cmdBuffer;
 int nlines = 0;
 
 // Buffer manager variable allocation
@@ -49,4 +48,12 @@ int readlines(char *str)
     {
         return -1;
     }
+}
+
+// Comparison function implementation
+void stringPointerCopy(char *s, char *t)
+{
+    while ((*s++ = *t++) != '\0')
+        ;
+    *s = '\0';
 }

@@ -19,6 +19,5 @@ int wordCounter(char *filename); // -w wc flag functionality
 int maxWidth(char *filename); // -L wc flag functionality
 
 int wcIdentifier(); // Processing buffer
-void stringPointerCopy(char *s, char *t); // Comparison helper function
 
 #endif
