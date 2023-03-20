@@ -1,5 +1,5 @@
 Hello my dearest friend!
-Th	is is an ex   ample file!
+Th	is is an ex	ample file!
 
 
 And th	is	is a space
