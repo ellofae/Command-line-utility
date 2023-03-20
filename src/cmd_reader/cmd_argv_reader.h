@@ -25,6 +25,7 @@ char *allocateBuffer(int n);
 // Possible Command-line options
 #define WCOPTIONS 5
 #define CATOPTIONS 5
+#define GREPOPTIONS 5
 
 // Command-line arguments processing functionality 
 int readlines(char *str);

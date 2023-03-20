@@ -1,0 +1,3 @@
+Another example file for usage
+This time this txt file is longer
+And such a functionality test is cool
