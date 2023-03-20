@@ -1,6 +1,6 @@
-Hello friend!
-This is a test file.
+Hello my dearest friend!
+Th	is is an ex   ample file!
 
 
-To test -l flag functionality.
-This line	if for tab.  Just to check.
+And th	is	is a space
+A huge space, my friend!

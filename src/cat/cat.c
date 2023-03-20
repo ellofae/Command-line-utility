@@ -52,30 +52,48 @@ int catIdentifier()
 
     if (identifier != 0)
     {
+        int t1;
+        if ((t1 = creat(TEMPFILE1, PARAMS)) == -1) {
+            printf("cat: didn't namange to create nessesary temporary file.\n");
+            return -1;
+        }
+
+        int t2;
+        if ((t2 = creat(TEMPFILE2, PARAMS)) == -1) {
+            printf("cat: didn't namange to create nessesary temporary file.\n");
+            return -1;
+        }
+
+        if (filecopy(cmdBuffer[nlines-1], TEMPFILE1) != 0) {
+            return -1;
+        }
+
         if (catStructure.bigAFlag == 1)
         {
-            showAll(cmdBuffer[nlines - 1]);
+            showAll();
         }
         if (catStructure.bigEFlag == 1)
         {
-            addEndSign(cmdBuffer[nlines-1]);
+            addEndSign();
         }
         if (catStructure.bigTFlag == 1)
         {
-            replaceTabChars(cmdBuffer[nlines-1]);
+            replaceTabChars();
         }
         if (catStructure.bFlag == 1)
         {
-            numberNonEmptyOutput(cmdBuffer[nlines-1]);
+            numberNonEmptyOutput();
         }
         if (catStructure.nFlag == 1)
         {
-            numberOutput(cmdBuffer[nlines-1]);
+            numberOutput();
         }
+
+        fileStdout();
     }
     else
     {
-         FILE *fptr;
+        FILE *fptr;
         if ((fptr = fopen(cmdBuffer[nlines-1], "r")) == NULL) {
             printf("wc: didn't manage to open the file '%s'\n", cmdBuffer[nlines-1]);
             return -1;
@@ -90,124 +108,214 @@ int catIdentifier()
     }
 }
 
+// Get data of the temporary file TEMPFILE1 to stdout descriptor
+int fileStdout() {
+    FILE *temp;
+    if ((temp = fopen(TEMPFILE1, "r")) == NULL) {
+        printf("wc: didn't manage to open the file '%s'\n", TEMPFILE1);
+        return -1;
+    }
+
+    register int c;
+    while((c = getc(temp)) != EOF) {
+        printf("%c", c);
+    }
+
+    remove(TEMPFILE1);
+    remove(TEMPFILE2);
+}
+
+// Copy data from one temporary file to another
+int filecopy(char *filename1, char *filename2) {
+    FILE *mainDesc;
+    if ((mainDesc = fopen(filename1, "r")) == NULL) {
+        printf("wc: didn't manage to open the file '%s'\n", filename1);
+        return -1;
+   }
+
+   FILE *additionaDesc;
+    if ((additionaDesc = fopen(filename2, "w")) == NULL) {
+        printf("wc: didn't manage to open the file '%s'\n", filename2);
+        return -1;
+   }
+
+    register int c;
+    while((c = getc(mainDesc)) != EOF) {
+        putc(c, additionaDesc);
+    }
+
+    fclose(mainDesc);
+    fclose(additionaDesc);
+
+    return 0;
+}
+
 // -A cat flag functionality implementation
-int showAll(char *filename) {
-    FILE *fptr;
-    if ((fptr = fopen(filename, "r")) == NULL) {
-        printf("wc: didn't manage to open the file '%s'\n", filename);
+int showAll() {
+    FILE *temp_1;
+    if ((temp_1 = fopen(TEMPFILE1, "r")) == NULL) {
+        printf("wc: didn't manage to open the file '%s'\n", TEMPFILE1);
+        return -1;
+    }
+
+    FILE *temp_2;
+    if ((temp_2 = fopen(TEMPFILE2, "w")) == NULL) {
+        printf("wc: didn't manage to open the file '%s'\n", TEMPFILE2);
         return -1;
     }
     register int c;
 
-    while ((c = getc(fptr)) != EOF) {
+    while ((c = getc(temp_1)) != EOF) {
         if (c == '\t') {
-            printf("%s", "^I");
+            fputs("^I", temp_2);
         } else if (c == '\n') {
-            printf("%c%c", '$', '\n');
+            fputs("$\n", temp_2);
         } else {
-            printf("%c", c);
+            putc(c, temp_2);
         }
     }
 
-    fclose(fptr);
+    fclose(temp_1);
+    fclose(temp_2);
+
+    filecopy(TEMPFILE2, TEMPFILE1);
     return 0;
 }
 
 // -E cat flag functionality implementation
-int addEndSign(char *filename) {
-    FILE *fptr;
-    if ((fptr = fopen(filename, "r")) == NULL) {
-        printf("wc: didn't manage to open the file '%s'\n", filename);
+int addEndSign() {
+    FILE *temp_1;
+    if ((temp_1 = fopen(TEMPFILE1, "r")) == NULL) {
+        printf("wc: didn't manage to open the file '%s'\n", TEMPFILE1);
+        return -1;
+    }
+
+    FILE *temp_2;
+    if ((temp_2 = fopen(TEMPFILE2, "w")) == NULL) {
+        printf("wc: didn't manage to open the file '%s'\n", TEMPFILE2);
         return -1;
     }
     register int c;
 
-    while ((c = getc(fptr)) != EOF) {
+    while ((c = getc(temp_1)) != EOF) {
         if (c == '\n') {
-            printf("%c%c", '$', '\n');
+            fputs("$\n", temp_2);
         } else {
-            printf("%c", c);
+            putc(c, temp_2);
         }
     }
 
-    fclose(fptr);
+    fclose(temp_1);
+    fclose(temp_2);
+
+    filecopy(TEMPFILE2, TEMPFILE1);
+    
     return 0;
 }
 
 // -T cat flag functionality implementation
-int replaceTabChars(char *filename) {
-    FILE *fptr;
-    if ((fptr = fopen(filename, "r")) == NULL) {
-        printf("wc: didn't manage to open the file '%s'\n", filename);
+int replaceTabChars() {
+    FILE *temp_1;
+    if ((temp_1 = fopen(TEMPFILE1, "r")) == NULL) {
+        printf("wc: didn't manage to open the file '%s'\n", TEMPFILE1);
+        return -1;
+    }
+
+    FILE *temp_2;
+    if ((temp_2 = fopen(TEMPFILE2, "w")) == NULL) {
+        printf("wc: didn't manage to open the file '%s'\n", TEMPFILE2);
         return -1;
     }
     register int c;
 
-    while ((c = getc(fptr)) != EOF) {
+    while ((c = getc(temp_1)) != EOF) {
        if (c == '\t') {
-            printf("%s", "^I");
+            fputs("^I", temp_2);
         } else {
-            printf("%c", c);
+            putc(c, temp_2);
         }
     }
 
-    fclose(fptr);
+    fclose(temp_1);
+    fclose(temp_2);
+
+    filecopy(TEMPFILE2, TEMPFILE1);
+    
     return 0;
 }
 
 // -n cat flag functionality implementation
-int numberOutput(char *filename) {
-    FILE *fptr;
-    if ((fptr = fopen(filename, "r")) == NULL) {
-        printf("wc: didn't manage to open the file '%s'\n", filename);
+int numberOutput() {
+    FILE *temp_1;
+    if ((temp_1 = fopen(TEMPFILE1, "r")) == NULL) {
+        printf("wc: didn't manage to open the file '%s'\n", TEMPFILE1);
+        return -1;
+    }
+
+    FILE *temp_2;
+    if ((temp_2 = fopen(TEMPFILE2, "w")) == NULL) {
+        printf("wc: didn't manage to open the file '%s'\n", TEMPFILE2);
         return -1;
     }
     register int c;
     int newLineIdent = 1, count = 1;
 
-    while ((c = getc(fptr)) != EOF) {
+    while ((c = getc(temp_1)) != EOF) {
         if (newLineIdent == 1) {
-            printf("\t%d  ", count);
+            putc('\t', temp_2);
+            putc(count+'0', temp_2);
+            fputs("  ", temp_2);
             ++count;
             newLineIdent = 0;
         }  if (c == '\n') {
             newLineIdent = 1;
         } 
         
-        printf("%c", c);
+        putc(c, temp_2);
     }
 
-    fclose(fptr);
+    fclose(temp_1);
+    fclose(temp_2);
+
+    filecopy(TEMPFILE2, TEMPFILE1);
+    
     return 0;
 }
 
 // -b cat flag functionality implementation
-int numberNonEmptyOutput(char *filename) {
-    FILE *fptr;
-    if ((fptr = fopen(filename, "r")) == NULL) {
-        printf("wc: didn't manage to open the file '%s'\n", filename);
+int numberNonEmptyOutput() {
+    FILE *temp_1;
+    if ((temp_1 = fopen(TEMPFILE1, "r")) == NULL) {
+        printf("wc: didn't manage to open the file '%s'\n", TEMPFILE1);
+        return -1;
+    }
+
+    FILE *temp_2;
+    if ((temp_2 = fopen(TEMPFILE2, "w")) == NULL) {
+        printf("wc: didn't manage to open the file '%s'\n", TEMPFILE2);
         return -1;
     }
     register int c;
     int newLineIdent = 1, count = 1;
 
-    while ((c = getc(fptr)) != EOF) {
+    while ((c = getc(temp_1)) != EOF) {
         if (newLineIdent == 1 && c != '\n') {
-            printf("\t%d  ", count);
+            putc('\t', temp_2);
+            putc(count+'0', temp_2);
+            fputs("  ", temp_2);
             ++count;
             newLineIdent = 0;
         }  if (c == '\n') {
             newLineIdent = 1;
         } 
         
-        printf("%c", c);
+        putc(c, temp_2);
     }
 
-    fclose(fptr);
+    fclose(temp_1);
+    fclose(temp_2);
+
+    filecopy(TEMPFILE2, TEMPFILE1);
+    
     return 0;
 }
-
-
-// OPTIMIZATION NOTE:
-// pass descriptor to the functions
-// open the file outside the functions and pass a descriptor.
