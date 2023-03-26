@@ -55,7 +55,7 @@ int grepIdentifier()
 
         if (grepStructure.iFlag == 1)
         {
-            
+            ignoreCase(cmdBuffer[nlines-1], cmdBuffer[nlines-2]);   
         }
         if (grepStructure.cFlag == 1)
         {
@@ -113,6 +113,34 @@ int regularGrep(char *filename, char *pattern) {
     return 0;
 }
 
+// -i flag function implementation
+int ignoreCase(char *filename, char *pattern) {
+    FILE *fp;
+    if ((fp = fopen(filename, "r")) == NULL) {
+        printf("grep: didn't manage to open the file '%s'\n", filename);
+        return -1;
+    }
+
+    register int c;
+    char line[1024];
+
+    int newLineIdent = 0, len = 0;
+    while((c = getc(fp)) != EOF) {
+        *(line + len++) = c;
+
+        if(c == '\n') {
+            line[len] = '\0';
+            
+            len = 0;
+            if(patternCheckIgnoreCase(line, pattern) == 0) {
+                printf("%s", line);
+            }
+        }
+    }
+
+    return 0;
+}
+
 // Checking if line has got the pattern 
 int patternCheck(char *line, char* pattern) {
     char *patternPtr = pattern;
@@ -139,6 +167,40 @@ int patternCheck(char *line, char* pattern) {
 
     return -1;
 }
+
+// Check if pattern is in the line (ignore-case)
+int patternCheckIgnoreCase(char *line, char* pattern) {
+    char *patternPtr = pattern;
+    int patternLength = 0;
+
+    while((*patternPtr++ != '\0')) {
+        ++patternLength;
+    }
+
+    int i, j = 0, len = 0;
+    char tempChar;
+    for (i = 0; i < strlen(line); i++) {
+        tempChar = line[i];
+        if (tempChar >= 65 && tempChar <= 90) {
+            tempChar = line[i] - ('A' - 'a');  
+        }
+
+        if (tempChar == pattern[j]) {
+            ++len;
+            ++j;
+
+            if (len == patternLength) {
+                return 0;
+            }
+        } else {
+            len = 0;
+            j = 0;
+        }
+    }
+
+    return -1;
+}
+
 
 
 // NOTE: Grep functionality is under development since 21.03.2023

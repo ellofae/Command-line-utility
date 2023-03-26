@@ -14,8 +14,10 @@ struct grepStruct {
 };
 
 int grepIdentifier();
+int ignoreCase(char *filename, char *pattern); // -i flag function
 
 int regularGrep(char *filename, char *pattern); // regular grep function
 int patternCheck(char *line, char* pattern); // check if pattern is in the line
+int patternCheckIgnoreCase(char *line, char *pattern); // check if pattern is in the line (ignore-case)
 
 #endif

@@ -4,3 +4,4 @@ Th	is is an ex	ample file!
 
 And th	is	is a space functionality
 A huge space, my friend!
+Some case sensetyive FUNCTIONALITY test line
