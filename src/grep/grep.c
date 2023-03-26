@@ -52,32 +52,33 @@ int grepIdentifier()
         }
     }
 
-    if (identifier != 0)
-    {
+    
 
+    if (identifier != 0)
+    {  
         if (grepStructure.iFlag == 1)
-        {
-            if (identifier == 1) {
-                ignoreCase(cmdBuffer[nlines-1], cmdBuffer[nlines-2]);
+            {
+                if (identifier == 1) {
+                    ignoreCase(cmdBuffer[nlines-1], cmdBuffer[nlines-2]);
+                }
+                caseIdentifier = 1;
             }
-            caseIdentifier = 1;
-        }
-        if (grepStructure.cFlag == 1)
-        {
-            matchingLinesCounter(cmdBuffer[nlines-1], cmdBuffer[nlines-2]);
-        }
-        if (grepStructure.vFlag == 1)
-        {
-            nonMatchingLinesOutput(cmdBuffer[nlines-1], cmdBuffer[nlines-2]);
-        }
-        if (grepStructure.lFlag == 1)
-        {
-            
-        }
-        if (grepStructure.LFlag == 1)
-        {
-            
-        }
+            if (grepStructure.cFlag == 1)
+            {
+                matchingLinesCounter(cmdBuffer[nlines-1], cmdBuffer[nlines-2]);
+            }
+            if (grepStructure.vFlag == 1)
+            {
+                nonMatchingLinesOutput(cmdBuffer[nlines-1], cmdBuffer[nlines-2]);
+            }
+            if (grepStructure.lFlag == 1)
+            {
+                filenamesWithMatches(cmdBuffer[nlines-1], cmdBuffer[nlines-2]);
+            }
+            if (grepStructure.LFlag == 1)
+            {
+                filenamesWithNoMatches(cmdBuffer[nlines-1], cmdBuffer[nlines-2]);
+            }
     }
     else
     {
@@ -213,6 +214,76 @@ int nonMatchingLinesOutput(char *filename, char *pattern) {
         }
     }
     
+    return 0;
+}
+
+// -l flag function implementation
+int filenamesWithMatches(char *filename, char *pattern) {
+    FILE *fp;
+    if ((fp = fopen(filename, "r")) == NULL) {
+        printf("grep: didn't manage to open the file '%s'\n", filename);
+        return -1;
+    }
+
+    register int c;
+    char line[1024];
+
+    int newLineIdent = 0, len = 0;
+    while((c = getc(fp)) != EOF) {
+        *(line + len++) = c;
+
+        if(c == '\n') {
+            line[len] = '\0';
+            
+            len = 0;
+            if (caseIdentifier == 0) {
+                if(patternCheck(line, pattern) == 0) {
+                    printf("%s\n", filename);
+                    return 0;
+                }
+            } else {
+                if(patternCheckIgnoreCase(line, pattern) == 0) {
+                    printf("%s", filename);
+                    return 0;
+                }
+            }
+        }
+    }
+}
+
+// -L flag function implementation
+int filenamesWithNoMatches(char *filename, char *pattern) {
+    FILE *fp;
+    if ((fp = fopen(filename, "r")) == NULL) {
+        printf("grep: didn't manage to open the file '%s'\n", filename);
+        return -1;
+    }
+
+    register int c;
+    char line[1024];
+
+    int matchCount = 0;
+
+    int newLineIdent = 0, len = 0;
+    while((c = getc(fp)) != EOF) {
+        *(line + len++) = c;
+
+        if(c == '\n') {
+            line[len] = '\0';
+            
+            len = 0;
+            if (caseIdentifier == 0) {
+                if(patternCheck(line, pattern) == 0) {
+                    return 0;
+                }
+            } else {
+                if(patternCheckIgnoreCase(line, pattern) == 0) {
+                    return 0;
+                }
+            }
+        }
+    }
+    printf("%s\n", filename);
     return 0;
 }
 
